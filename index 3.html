@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My IB summer study plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF8F4;
+    --card:#FFFFFF;
+    --ink:#3A362F;
+    --ink-soft:#7A7468;
+    --line:#EAE5DA;
+    --chem:#C98A2B;
+    --chem-bg:#FBF1DE;
+    --bio:#4F8A63;
+    --bio-bg:#E9F3EC;
+    --psych:#7C6FC4;
+    --psych-bg:#EFEDFA;
+    --maths:#3D8FA6;
+    --maths-bg:#E7F3F6;
+    --practice:#B15C6E;
+    --practice-bg:#FBEAEE;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Nunito',sans-serif;}
+  .app{max-width:720px;margin:0 auto;padding:1.5rem 1rem 3rem;}
+  h1,h2,h3{font-family:'Fredoka',sans-serif;font-weight:600;margin:0;}
+  .header{position:relative;padding:1.25rem 1.25rem 1.5rem;background:var(--card);border-radius:20px;border:1px solid var(--line);margin-bottom:1.25rem;overflow:hidden;}
+  .tape{position:absolute;top:-10px;left:24px;width:90px;height:26px;background:#F0C46B;opacity:.55;transform:rotate(-4deg);border-radius:2px;}
+  .tape.two{left:auto;right:24px;background:#9BD3B4;transform:rotate(5deg);}
+  .header h1{font-size:22px;color:var(--ink);}
+  .header p.sub{margin:.3rem 0 0;color:var(--ink-soft);font-size:14px;}
+  .progress-row{display:flex;align-items:center;gap:12px;margin-top:1rem;}
+  .progress-track{flex:1;height:10px;border-radius:6px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--bio),var(--maths));transition:width .3s ease;}
+  .progress-label{font-size:13px;font-weight:700;color:var(--ink-soft);min-width:88px;text-align:right;}
+  .weeks{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:1rem;}
+  .week-btn{flex:0 0 auto;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
+  .week-btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .week-label{font-size:13px;color:var(--ink-soft);margin:0 0 .6rem 2px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;}
+  .days{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:1.5rem;}
+  .day-chip{position:relative;border-radius:14px;border:1px solid var(--line);background:var(--card);padding:10px 4px 8px;text-align:center;cursor:pointer;}
+  .day-chip.active{border-color:var(--ink);border-width:2px;}
+  .day-chip.today{box-shadow:0 0 0 2px #F0C46B inset;}
+  .day-chip .dow{font-size:10px;color:var(--ink-soft);text-transform:uppercase;font-weight:700;}
+  .day-chip .num{font-family:'Fredoka',sans-serif;font-size:17px;margin-top:2px;}
+  .ring{width:20px;height:20px;border-radius:50%;margin:6px auto 0;background:conic-gradient(var(--bio) calc(var(--pct)*1%), var(--line) 0);}
+  .ring::after{content:'';display:block;width:12px;height:12px;margin:4px auto;border-radius:50%;background:var(--card);}
+  .day-detail{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.25rem;position:relative;overflow:hidden;}
+  .day-detail .tape{top:-10px;left:50%;transform:translateX(-50%) rotate(-2deg);background:#D9C7F0;opacity:.6;}
+  .day-title{font-size:19px;margin-bottom:2px;}
+  .day-sub{color:var(--ink-soft);font-size:13px;margin-bottom:1.1rem;}
+  .block{border-radius:14px;padding:12px 14px;margin-bottom:12px;border:1px solid var(--line);}
+  .block-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;}
+  .block-title{font-family:'Fredoka',sans-serif;font-size:14px;font-weight:500;}
+  .block-topic{font-size:13px;color:var(--ink-soft);margin-left:17px;margin-top:-4px;margin-bottom:8px;}
+  .task{position:relative;display:flex;align-items:flex-start;gap:10px;padding:7px 4px;font-size:14px;cursor:pointer;border-radius:10px;transition:background .15s ease;}
+  .task:hover{background:rgba(0,0,0,.03);}
+  .task input{position:absolute;opacity:0;width:22px;height:22px;top:6px;left:4px;margin:0;cursor:pointer;}
+  .box{width:22px;height:22px;border-radius:8px;border:2px solid var(--ink-soft);flex:0 0 auto;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:transform .18s cubic-bezier(.34,1.56,.64,1),background .15s ease,border-color .15s ease;position:relative;}
+  .box::after{content:'✓';font-size:13px;font-weight:700;color:#fff;opacity:0;transform:scale(.5);transition:opacity .12s ease,transform .12s ease;}
+  .task input:checked + .box{background:var(--ink);border-color:var(--ink);}
+  .task input:checked + .box::after{opacity:1;transform:scale(1);}
+  .task.pop .box{transform:scale(1.22);}
+  .task-body{flex:1;min-width:0;}
+  .task-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:2px;}
+  .tag{font-size:10px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:rgba(0,0,0,.06);color:var(--ink-soft);}
+  .time-chip{font-size:10px;font-weight:700;color:var(--ink-soft);padding:2px 6px;}
+  .task span.txt{line-height:1.4;}
+  .task.done span.txt{text-decoration:line-through;color:var(--ink-soft);}
+  .chem-b{background:var(--chem-bg);} .chem-b .dot{background:var(--chem);} .chem-b .block-title{color:#7A5518;} .chem-b .box{border-color:var(--chem);} .chem-b .task input:checked + .box{background:var(--chem);border-color:var(--chem);}
+  .bio-b{background:var(--bio-bg);} .bio-b .dot{background:var(--bio);} .bio-b .block-title{color:#2E5C3E;} .bio-b .box{border-color:var(--bio);} .bio-b .task input:checked + .box{background:var(--bio);border-color:var(--bio);}
+  .psych-b{background:var(--psych-bg);} .psych-b .dot{background:var(--psych);} .psych-b .block-title{color:#4C4088;} .psych-b .box{border-color:var(--psych);} .psych-b .task input:checked + .box{background:var(--psych);border-color:var(--psych);}
+  .maths-b{background:var(--maths-bg);} .maths-b .dot{background:var(--maths);} .maths-b .block-title{color:#245A69;} .maths-b .box{border-color:var(--maths);} .maths-b .task input:checked + .box{background:var(--maths);border-color:var(--maths);}
+  .practice-b{background:var(--practice-bg);} .practice-b .dot{background:var(--practice);} .practice-b .block-title{color:#7C3D4A;} .practice-b .box{border-color:var(--practice);} .practice-b .task input:checked + .box{background:var(--practice);border-color:var(--practice);}
+  .block-time{font-size:11px;color:var(--ink-soft);font-weight:700;margin-left:auto;}
+  .complete-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bio-bg);color:#2E5C3E;font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;padding:7px 14px;border-radius:999px;margin-top:4px;margin-bottom:2px;animation:badge-pop .35s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes badge-pop{0%{transform:scale(.6);opacity:0;}70%{transform:scale(1.08);opacity:1;}100%{transform:scale(1);}}
+  .nav-btns{display:flex;justify-content:space-between;margin-top:1rem;}
+  .nav-btns button{font-family:'Fredoka',sans-serif;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 16px;font-size:13px;cursor:pointer;color:var(--ink);}
+  .nav-btns button:disabled{opacity:.35;cursor:default;}
+  .streak-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
+  .streak-badge{display:inline-flex;align-items:center;gap:5px;background:#FDEFDA;color:#8A5A1F;font-family:'Fredoka',sans-serif;font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;}
+  .day-ring-big{width:52px;height:52px;border-radius:50%;background:conic-gradient(var(--bio) calc(var(--pct-big)*1%), var(--line) 0);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .day-ring-big::after{content:attr(data-pct)'%';display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--card);font-family:'Fredoka',sans-serif;font-size:12px;font-weight:600;color:var(--ink);}
+  .day-detail-head{display:flex;align-items:center;gap:14px;margin-bottom:1.1rem;}
+  .confetti-piece{position:absolute;top:-10px;width:8px;height:8px;border-radius:2px;pointer-events:none;animation:confetti-fall 1.1s ease-out forwards;z-index:50;}
+  @keyframes confetti-fall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(220px) rotate(540deg);opacity:0;}}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;padding:11px 20px;border-radius:999px;opacity:0;transition:opacity .25s ease,transform .25s ease;pointer-events:none;z-index:100;white-space:nowrap;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  @media(max-width:480px){.days{grid-template-columns:repeat(6,1fr);gap:5px;} .day-chip{padding:6px 2px;} .day-chip .num{font-size:14px;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="tape"></div>
+    <div class="tape two"></div>
+    <h1>My IB summer study plan</h1>
+    <p class="sub">Chemistry HL (Reactivity 1-3 focus) · Biology HL (Unit C focus) · Psychology SL · Maths AI SL — using Revision Dojo</p>
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="overall-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="overall-label">0% done</div>
+    </div>
+    <div class="streak-row">
+      <span class="streak-badge" id="streak-badge">🔥 0-day streak</span>
+      <span class="streak-badge" id="tasks-badge" style="background:#EAF3EC;color:#2E5C3E;">✅ 0 tasks done</span>
+    </div>
+  </div>
+
+  <div class="weeks" id="weeks"></div>
+  <p class="week-label" id="week-label"></p>
+  <div class="days" id="days"></div>
+  <div class="day-detail" id="day-detail">
+    <div class="tape"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SUBJECT_META = {
+  chem:{cls:'chem-b', label:'Chemistry HL', icon:'🧪'},
+  bio:{cls:'bio-b', label:'Biology HL', icon:'🌱'},
+  psych:{cls:'psych-b', label:'Psychology SL', icon:'🧠'},
+  maths:{cls:'maths-b', label:'Maths AI SL', icon:'📐'},
+  practice:{cls:'practice-b', label:'Active practice', icon:'⚡'}
+};
+
+const WEEK_LABELS = [
+  'Week 1 · Reactivity 1 & Unit C foundations',
+  'Week 2 · Reactivity 2-3 & Unit C foundations',
+  'Week 3 · Topic-by-topic practice',
+  'Week 4 · Papers and mistake review',
+  'Week 5 · Full mock exams',
+  'Week 6 · Final revision'
+];
+
+function d(subject, topic, tasks){ return {subject, topic, tasks}; }
+
+const DAYS = [
+// WEEK 1
+{date:'13 Jul', dow:'Mon', week:1, blocks:[
+  d('chem','Reactivity 1 — Measuring enthalpy changes',[
+    'Read Dojo\'s notes on measuring enthalpy change: calorimetry and specific heat capacity calculations',
+    'Filter the Questionbank to Reactivity 1 / enthalpy and do 12 questions',
+    'Mark with Jojo AI and rewrite the correct method for every question you missed',
+    'Run the enthalpy flashcard deck once'
+  ]),
+  d('bio','Unit C — Enzymes and metabolism I',[
+    'Read Dojo\'s Unit C notes on enzyme structure and the induced-fit model',
+    'Read the notes on metabolic pathways (anabolic vs catabolic)',
+    'Do 10 Questionbank questions on enzymes and metabolism',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('psych','Research methods and ethics',[
+    'Read Dojo\'s Psychology SL notes on experimental, case, and correlational studies',
+    'Read the notes on IB research ethics guidelines',
+    'Do a Questionbank set on research methods and use Jojo AI feedback to spot gaps',
+    'Write 3 possible exam questions on methodology in your own words'
+  ]),
+  d('practice','Spaced flashcard pass',['Run today\'s enthalpy + enzyme flashcard decks until you can answer without looking'])
+]},
+{date:'14 Jul', dow:'Tue', week:1, blocks:[
+  d('chem','Reactivity 1 — Energy cycles in reactions',[
+    'Read Dojo\'s notes on energy cycles: Hess\'s law and enthalpies of formation/combustion',
+    'Practise 5 energy-cycle problems by hand',
+    'Do 10 Questionbank questions on energy cycles',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('bio','Unit C — Enzymes and metabolism II',[
+    'Read Dojo\'s notes on factors affecting enzyme activity (temperature, pH, inhibitors)',
+    'Sketch a rate-of-reaction vs temperature/pH graph from memory',
+    'Do 10 Questionbank questions on enzyme inhibition',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('maths','Number & algebra I — sequences, exponents, logarithms',[
+    'Read Dojo\'s Maths AI SL notes on arithmetic and geometric sequences',
+    'Read the notes on exponent and logarithm laws',
+    'Do a 10-question Questionbank drill using your GDC and check with Jojo AI',
+    'Redo any question you got wrong without looking at the worked solution first'
+  ]),
+  d('practice','Spaced review',['Re-run yesterday\'s flashcard decks, then add today\'s new cards'])
+]},
+{date:'15 Jul', dow:'Wed', week:1, blocks:[
+  d('chem','Reactivity 1 — Energy from fuels',[
+    'Read Dojo\'s notes on fuel value, combustion enthalpies, and comparing fossil vs alternative fuels',
+    'Do 10 Questionbank questions on energy from fuels',
+    'Mark with Jojo AI',
+    'Summarise in your own words why some fuels release more energy per gram than others'
+  ]),
+  d('bio','Unit C — Cell respiration',[
+    'Read Dojo\'s notes on aerobic and anaerobic cell respiration',
+    'Draw the stages of respiration (glycolysis, Krebs cycle, electron transport chain) from memory',
+    'Do 10 Questionbank questions on cell respiration',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('psych','Biological approach I — localisation and neuroplasticity',[
+    'Read Dojo\'s Psychology notes on localisation of brain function',
+    'Read the notes on neuroplasticity and a key study (e.g. London taxi drivers)',
+    'Write an outline answer for a neuroplasticity short-answer question',
+    'Ask Jojo AI Chat to quiz you on the study\'s aim, procedure, and findings'
+  ]),
+  d('practice','Mixed quick quiz',['10 mixed Questionbank questions pulling from this week\'s Chem and Bio topics'])
+]},
+{date:'16 Jul', dow:'Thu', week:1, blocks:[
+  d('chem','Reactivity 1 — Entropy and spontaneity',[
+    'Read Dojo\'s notes on entropy (ΔS) and Gibbs free energy (ΔG)',
+    'Practise calculating ΔG and predicting spontaneity for 8 reactions',
+    'Do 10 Questionbank questions on entropy and spontaneity',
+    'Mark with Jojo AI — this is often the trickiest Reactivity 1 subtopic, so read every explanation fully'
+  ]),
+  d('bio','Unit C — Photosynthesis',[
+    'Read Dojo\'s notes on the light-dependent and light-independent reactions',
+    'Draw the inputs/outputs of photosynthesis from memory',
+    'Do 10 Questionbank questions on photosynthesis',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('maths','Number & algebra II — finance and systems',[
+    'Read Dojo\'s notes on simple/compound interest and depreciation',
+    'Practise solving systems of equations with your GDC',
+    'Do 10 Questionbank finance-maths questions',
+    'Ask Jojo AI Chat to explain any GDC step you got stuck on'
+  ]),
+  d('practice','5-minute spaced recall',['Quick-fire recall of this week\'s flashcard decks'])
+]},
+{date:'17 Jul', dow:'Fri', week:1, blocks:[
+  d('chem','Reactivity 1 — full consolidation',[
+    'Do a 20-question mixed Questionbank set covering enthalpy, energy cycles, fuels, and entropy together',
+    'Mark with Jojo AI',
+    'Redo every missed question without looking at the mark scheme first',
+    'Update your error doc with the exact sub-concept you\'re still shaky on'
+  ]),
+  d('bio','Unit C — Chemical signalling I',[
+    'Read Dojo\'s notes on hormones as chemical messengers',
+    'Read the notes on endocrine glands and their target tissues',
+    'Do 10 Questionbank questions on chemical signalling',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('psych','Biological approach II — hormones and pheromones',[
+    'Read Dojo\'s notes on hormones and behaviour (e.g. oxytocin)',
+    'Read a key hormones study in the Psychology notes hub',
+    'Practise evaluating it: write 2 strengths and 2 limitations',
+    'Do a short Questionbank set on the biological approach'
+  ]),
+  d('practice','Self-check',['Log this week\'s weakest Reactivity 1 sub-concept in your error doc, and why'])
+]},
+{date:'18 Jul', dow:'Sat', week:1, blocks:[
+  d('chem','Reactivity 2 — How much? The amount of chemical change',[
+    'Read Dojo\'s notes on stoichiometric calculations, limiting reagent, and percentage yield',
+    'Do 12 Questionbank questions on amount of chemical change',
+    'Mark with Jojo AI and log every miss',
+    'Run the stoichiometry flashcard deck once'
+  ]),
+  d('bio','Unit C — Chemical signalling II',[
+    'Read Dojo\'s notes on feedback loops in hormone regulation (e.g. blood glucose)',
+    'Draw a negative feedback loop diagram from memory',
+    'Do 10 Questionbank questions on hormonal feedback',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('maths','Functions I — linear and quadratic',[
+    'Read Dojo\'s notes on linear and quadratic function features',
+    'Practise finding vertex, roots, and axis of symmetry',
+    'Do 10 Questionbank questions using your GDC',
+    'Redo anything you missed without the worked solution'
+  ]),
+  d('practice','Weekly review',['Go through your entire error doc from week 1'])
+]},
+// WEEK 2
+{date:'20 Jul', dow:'Mon', week:2, blocks:[
+  d('chem','Reactivity 2 — How fast? The rate of chemical change',[
+    'Read Dojo\'s notes on rate of reaction, rate laws, and the Arrhenius equation',
+    'Do 12 Questionbank questions on rate of chemical change',
+    'Mark with Jojo AI',
+    'Sketch a rate-vs-concentration graph from memory and check it against the notes'
+  ]),
+  d('bio','Unit C — Neural signalling',[
+    'Read Dojo\'s notes on neurons, action potentials, and synaptic transmission',
+    'Draw a labelled neuron and a synapse from memory',
+    'Do 10 Questionbank questions on neural signalling',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('psych','Biological approach III — genetics and behaviour',[
+    'Read Dojo\'s notes on genetic influences on behaviour',
+    'Read a twin or adoption study in the notes hub',
+    'Practise a 22-mark essay outline using this study as evidence',
+    'Do a short Questionbank set on the biological approach'
+  ]),
+  d('practice','New + old flashcards',['Build today\'s flashcards, then re-run the ones from earlier days'])
+]},
+{date:'21 Jul', dow:'Tue', week:2, blocks:[
+  d('chem','Reactivity 2 — How far? The extent of chemical change',[
+    'Read Dojo\'s notes on equilibrium, the equilibrium constant Kc, and Le Chatelier\'s principle',
+    'Do 12 Questionbank questions on extent of chemical change',
+    'Mark with Jojo AI',
+    'Log any mix-up between "how fast" (kinetics) and "how far" (equilibrium) — that confusion is common'
+  ]),
+  d('bio','Unit C — Integration of body systems I',[
+    'Read Dojo\'s notes on how the nervous and endocrine systems interact',
+    'Read the notes on homeostasis and coordination between systems',
+    'Do 10 Questionbank questions on this subtopic',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('maths','Functions II — exponential, log, and rational',[
+    'Read Dojo\'s notes on exponential and logarithmic graphs',
+    'Read the notes on asymptotes of rational functions',
+    'Do 10 Questionbank questions using your GDC',
+    'Ask Jojo AI Chat to explain any graph transformation that confused you'
+  ]),
+  d('practice','Mixed quiz',['10 mixed Questionbank questions from this week\'s topics'])
+]},
+{date:'22 Jul', dow:'Wed', week:2, blocks:[
+  d('chem','Reactivity 2 — full consolidation',[
+    'Do a 20-question mixed Questionbank set covering amount, rate, and extent together',
+    'Mark with Jojo AI',
+    'Redo every missed question cold',
+    'Ask Jojo AI Chat to explain the difference between the three "how" questions in one paragraph'
+  ]),
+  d('bio','Unit C — Integration of body systems II',[
+    'Read Dojo\'s notes on the immune system\'s role in integrated body function',
+    'Read the notes on how organ systems respond together to internal/external change',
+    'Do 10 Questionbank questions on this subtopic',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('psych','Cognitive approach I — models of memory',[
+    'Read Dojo\'s notes on the multi-store model of memory',
+    'Read a key study (e.g. Peterson and Peterson)',
+    'Practise defining command terms: describe, evaluate, discuss',
+    'Do a short Questionbank set on the cognitive approach'
+  ]),
+  d('practice','Confidence check',['Rate your confidence (1-5) on every Reactivity and Unit C topic so far'])
+]},
+{date:'23 Jul', dow:'Thu', week:2, blocks:[
+  d('chem','Reactivity 3 — Mechanisms & proton transfer reactions I',[
+    'Read Dojo\'s notes on Reactivity 3 mechanisms and Brønsted-Lowry proton transfer theory',
+    'Read the notes on conjugate acid-base pairs and the pH scale',
+    'Do 10 Questionbank questions on proton transfer basics',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('bio','Unit C — Defence against disease',[
+    'Read Dojo\'s notes on the innate and adaptive immune response',
+    'Read the notes on antibodies and how vaccines work',
+    'Do 10 Questionbank questions on defence against disease',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('maths','Geometry & trig I — triangles and ratios',[
+    'Read Dojo\'s notes on trig ratios and the sine/cosine rule',
+    'Practise non-right-angled triangle problems',
+    'Do 10 Questionbank questions using your GDC',
+    'Redo any question you missed'
+  ]),
+  d('practice','Formula recall',['Recall this week\'s key formulas from memory before checking notes'])
+]},
+{date:'24 Jul', dow:'Fri', week:2, blocks:[
+  d('chem','Reactivity 3 — Proton transfer reactions II (your flagged weak spot)',[
+    'Read Dojo\'s notes on weak acids/bases and the Ka/Kb constants',
+    'Read the notes on buffers and how they resist pH change',
+    'Do 12 Questionbank questions on this subtopic',
+    'Mark with Jojo AI and read every explanation carefully — this is your priority area'
+  ]),
+  d('bio','Unit C — Populations and communities',[
+    'Read Dojo\'s notes on population growth curves and carrying capacity',
+    'Read the notes on species interactions within communities',
+    'Do 10 Questionbank questions on populations and communities',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('psych','Cognitive approach II — schema and decision-making',[
+    'Read Dojo\'s notes on schema theory',
+    'Read the notes on cognitive biases in decision-making',
+    'Write a short-answer outline response',
+    'Do a short Questionbank set on the cognitive approach'
+  ]),
+  d('practice','Update your error doc',['Log which proton-transfer sub-concept is still hardest, with a one-line reason'])
+]},
+{date:'25 Jul', dow:'Sat', week:2, blocks:[
+  d('chem','Reactivity 3 — Proton transfer reactions III',[
+    'Read Dojo\'s notes on titration curves and choosing indicators',
+    'Do 12 Questionbank questions on titrations and polyprotic acids',
+    'Mark with Jojo AI and log every miss',
+    'Run the proton transfer flashcard deck twice'
+  ]),
+  d('bio','Unit C — Transfer of energy and matter',[
+    'Read Dojo\'s notes on trophic levels, energy pyramids, and nutrient cycling',
+    'Draw an energy-flow diagram through a food chain from memory',
+    'Do 10 Questionbank questions on transfer of energy and matter',
+    'Mark with Jojo AI and log every miss'
+  ]),
+  d('maths','Geometry & trig II — 3D and volume',[
+    'Read Dojo\'s notes on volumes and surface areas of solids',
+    'Practise 3D geometry problems with your GDC',
+    'Do 10 Questionbank questions',
+    'Redo anything you missed'
+  ]),
+  d('practice','Full weekly review',['Go through your entire error doc from week 2, checking off any proton-transfer gaps you\'ve closed'])
+]},
+// WEEK 3
+{date:'27 Jul', dow:'Mon', week:3, blocks:[
+  d('chem','Quick pass: Structure 1 & 2',[
+    'Skim Dojo\'s Structure 1 & 2 notes (particulate matter models, bonding) — these aren\'t your priority, just refresh them',
+    'Do a 10-question mixed Questionbank set on Structure 1-2',
+    'Mark with Jojo AI and note anything genuinely unfamiliar',
+    'Flag anything shaky for a longer look in week 4'
+  ]),
+  d('bio','Practice: Enzymes/metabolism + Cell respiration',[
+    'Filter the Questionbank to these two subtopics and do a 15-question timed set',
+    'Mark with Jojo AI and log every miss',
+    'Redo the missed ones without the mark scheme',
+    'Log the mistake pattern in your error doc'
+  ]),
+  d('psych','Cognitive approach III — reliability of memory',[
+    'Read Dojo\'s notes on Loftus and Palmer (eyewitness memory)',
+    'Read the notes on factors affecting memory reliability',
+    'Practise an 8-mark short-answer response, timed',
+    'Check it against a mark scheme or Jojo AI feedback'
+  ]),
+  d('practice','End-of-day error review',['Review everything you got wrong today before you stop'])
+]},
+{date:'28 Jul', dow:'Tue', week:3, blocks:[
+  d('chem','Quick pass: Structure 3 + Reactivity 1 practice',[
+    'Skim Dojo\'s Structure 3 notes (classification of matter)',
+    'Do a 10-question Questionbank set on Structure 3',
+    'Then do a 12-question timed Reactivity 1 practice set (enthalpy/cycles/fuels/entropy)',
+    'Mark everything with Jojo AI and log misses'
+  ]),
+  d('bio','Practice: Photosynthesis + Chemical signalling',[
+    'Filter the Questionbank to these two subtopics and do a 15-question timed set',
+    'Mark with Jojo AI and log every miss',
+    'Redo the missed ones cold',
+    'Skim the related flashcard decks for anything shaky'
+  ]),
+  d('maths','Geometry & trig III — Voronoi diagrams',[
+    'Read Dojo\'s notes on Voronoi diagrams (an AI SL-specific topic)',
+    'Practise constructing and interpreting one by hand',
+    'Do 8 Questionbank questions on Voronoi diagrams',
+    'Ask Jojo AI Chat to clarify anything unclear'
+  ]),
+  d('practice','Spaced flashcard review',['Re-run the flashcard decks from the last two weeks'])
+]},
+{date:'29 Jul', dow:'Wed', week:3, blocks:[
+  d('chem','Reactivity 1 — full practice',[
+    'Filter the Questionbank to Reactivity 1 and do a 15-question timed set, harder difficulty if available',
+    'Mark with Jojo AI',
+    'Redo every miss without looking at the mark scheme',
+    'Log the pattern in your error doc'
+  ]),
+  d('bio','Practice: Neural signalling + Integration of body systems',[
+    'Filter the Questionbank to these two subtopics and do a 15-question timed set',
+    'Mark with Jojo AI and log every miss',
+    'Redo the missed ones cold',
+    'Log the pattern in your error doc'
+  ]),
+  d('psych','Sociocultural approach I — social identity',[
+    'Read Dojo\'s notes on social identity theory (Tajfel)',
+    'Read a key sociocultural-approach study',
+    'Practise an evaluation outline',
+    'Do a short Questionbank set on the sociocultural approach'
+  ]),
+  d('practice','Mixed quiz',['12 mixed Questionbank questions from this week\'s topics'])
+]},
+{date:'30 Jul', dow:'Thu', week:3, blocks:[
+  d('chem','Reactivity 2 — full practice',[
+    'Filter the Questionbank to Reactivity 2 and do a 15-question timed set covering amount/rate/extent',
+    'Mark with Jojo AI',
+    'Redo every miss cold',
+    'Log the pattern in your error doc'
+  ]),
+  d('bio','Practice: Defence against disease',[
+    'Filter the Questionbank to Defence against disease and do a 15-question timed set',
+    'Mark with Jojo AI and log every miss',
+    'Redo the missed ones cold',
+    'Skim the related flashcard deck'
+  ]),
+  d('maths','Statistics I — descriptive stats and correlation',[
+    'Read Dojo\'s notes on measures of central tendency and spread',
+    'Read the notes on correlation and linear regression using your GDC',
+    'Do 10 Questionbank questions',
+    'Redo anything you missed'
+  ]),
+  d('practice','Data booklet drill',['Practise locating Chemistry and Maths formulas in the data booklet'])
+]},
+{date:'31 Jul', dow:'Fri', week:3, blocks:[
+  d('chem','Reactivity 3 — full practice (proton transfer heavy)',[
+    'Filter the Questionbank to Reactivity 3, weighting toward proton transfer questions',
+    'Do a 15-question timed set',
+    'Mark with Jojo AI',
+    'Redo every miss cold, focusing especially on buffer and titration questions'
+  ]),
+  d('bio','Practice: Populations & communities + Transfer of energy/matter',[
+    'Filter the Questionbank to these two subtopics and do a 15-question timed set',
+    'Mark with Jojo AI and log every miss',
+    'Redo the missed ones cold',
+    'Log the pattern in your error doc'
+  ]),
+  d('psych','Sociocultural approach II — stereotypes and culture',[
+    'Read Dojo\'s notes on cultural origins of behaviour',
+    'Read a study on stereotype formation',
+    'Practise a 22-mark essay outline',
+    'Do a short Questionbank set on the sociocultural approach'
+  ]),
+  d('practice','Confidence check',['Update your 1-5 confidence rating for every Reactivity and Unit C topic'])
+]},
+{date:'1 Aug', dow:'Sat', week:3, blocks:[
+  d('chem','Mixed quiz — Reactivity-weighted',[
+    'Build a 20-question Questionbank quiz weighted mostly toward Reactivity 1-3, with a few Structure questions mixed in',
+    'Mark with Jojo AI',
+    'Update your ranked list of weakest sub-concepts',
+    'Review your full error doc for the week'
+  ]),
+  d('bio','Mixed review — Unit C',[
+    'Do a 15-question mixed Questionbank quiz across all Unit C subtopics so far',
+    'Mark with Jojo AI',
+    'Identify your 3 weakest Unit C subtopics from the results',
+    'Log them at the top of your error doc'
+  ]),
+  d('maths','Statistics II — probability and distributions',[
+    'Read Dojo\'s notes on conditional probability and tree diagrams',
+    'Read the notes on binomial and normal distributions using your GDC',
+    'Do 10 Questionbank questions',
+    'Redo anything you missed'
+  ]),
+  d('practice','Weekly review',['Go through your entire error doc from week 3'])
+]},
+// WEEK 4
+{date:'3 Aug', dow:'Mon', week:4, blocks:[
+  d('chem','Reactivity 3 — electron transfer reactions (redox)',[
+    'Read Dojo\'s notes on electron transfer (redox) reactions and oxidation states',
+    'Do 12 Questionbank questions on redox',
+    'Mark with Jojo AI',
+    'Compare proton transfer vs electron transfer mechanisms in one sentence each'
+  ]),
+  d('bio','Active error-doc review — Unit C',[
+    'Redo every question you have ever gotten wrong in Unit C so far',
+    'Cover the correct answer before you attempt it',
+    'Re-mark with Jojo AI',
+    'Flag anything you still get wrong for week 6'
+  ]),
+  d('psych','Option: Abnormal psychology I — etiology',[
+    'Read Dojo\'s notes on defining abnormality and explanatory models',
+    'Read the notes on a specific disorder covered in class',
+    'Practise defining its symptoms and etiology',
+    'Do a short Questionbank set on this option'
+  ]),
+  d('practice','Chemistry quiz',['12 mixed Questionbank questions across Reactivity 1-3'])
+]},
+{date:'4 Aug', dow:'Tue', week:4, blocks:[
+  d('chem','Mixed quiz (Paper 1 style, Reactivity-weighted)',[
+    'Use Dojo\'s Test Builder to create a 30-question multiple-choice set, weighted toward Reactivity 1-3',
+    'Time yourself: 45 minutes, no notes',
+    'Mark with Jojo AI',
+    'Log every pattern of error in your doc'
+  ]),
+  d('bio','Mixed quiz (Paper 1 style, Unit C weighted)',[
+    'Use Dojo\'s Test Builder to create a 30-question multiple-choice set, weighted toward Unit C',
+    'Time yourself: 45 minutes, no notes',
+    'Mark with Jojo AI',
+    'Log every pattern of error in your doc'
+  ]),
+  d('maths','Calculus I — differentiation',[
+    'Read Dojo\'s notes on basic differentiation rules',
+    'Read the notes on applications: maxima, minima, rates of change',
+    'Do 10 Questionbank questions',
+    'Redo anything you missed'
+  ]),
+  d('practice','Error doc review',['Read through your whole error doc from the last 4 weeks'])
+]},
+{date:'5 Aug', dow:'Wed', week:4, blocks:[
+  d('chem','Deep dive on your single weakest sub-concept',[
+    'Pick the exact sub-concept that\'s still weakest (likely inside proton transfer or entropy)',
+    'Reread that specific section of Dojo\'s notes from scratch',
+    'Redo every Questionbank question you\'ve ever gotten wrong on it',
+    'Do 10 fresh questions on it and mark with Jojo AI'
+  ]),
+  d('bio','Short Paper 2 — Unit C topic',[
+    'Use Dojo\'s Test Builder or Exam Mode to build a short Paper 2 on one Unit C subtopic',
+    'Time yourself: 45 minutes',
+    'Mark fully with Jojo AI, checking mark-scheme criteria',
+    'Log any structural mistakes (missing keywords, incomplete explanations)'
+  ]),
+  d('psych','Option: Abnormal psychology II — treatment',[
+    'Read Dojo\'s notes on diagnostic criteria (DSM/ICD)',
+    'Read the notes on one biological and one psychological treatment',
+    'Practise evaluating treatment effectiveness',
+    'Do a short Questionbank set on this option'
+  ]),
+  d('practice','Spaced review',['Re-run this week\'s flashcard decks'])
+]},
+{date:'6 Aug', dow:'Thu', week:4, blocks:[
+  d('chem','Short Paper 2 — Reactivity topic',[
+    'Use Dojo\'s Test Builder or Exam Mode to build a short Paper 2 on Reactivity 1, 2, or 3',
+    'Time yourself: 45 minutes',
+    'Mark fully with Jojo AI against mark-scheme criteria',
+    'Log any structural mistakes'
+  ]),
+  d('bio','Deep dive on your single weakest Unit C sub-concept',[
+    'Pick your worst-performing Unit C subtopic from this week\'s quiz results',
+    'Reread that subtopic\'s notes on Dojo from scratch',
+    'Redo every Questionbank question you\'ve ever gotten wrong on it',
+    'Do 10 fresh questions on it and mark with Jojo AI'
+  ]),
+  d('maths','Calculus II — integration',[
+    'Read Dojo\'s notes on basic integration rules',
+    'Read the notes on area-under-the-curve applications',
+    'Do 10 Questionbank questions',
+    'Redo anything you missed'
+  ]),
+  d('practice','Confidence check',['Update your 1-5 confidence rating for every topic'])
+]},
+{date:'7 Aug', dow:'Fri', week:4, blocks:[
+  d('chem','Data-based question + error review',[
+    'Practise 2 data-based questions, ideally on kinetics or equilibrium graphs',
+    'Review every Chemistry error you\'ve logged so far',
+    'Flag which Reactivity sub-concepts still aren\'t solid',
+    'Do a Jojo AI Chat session quizzing your weakest sub-concept'
+  ]),
+  d('bio','Data-based question + error review',[
+    'Practise 2 data-based questions, ideally on Unit C graphs (enzyme kinetics, population curves)',
+    'Review every Unit C error you\'ve logged so far',
+    'Flag which subtopics still aren\'t solid',
+    'Do a Jojo AI Chat session quizzing your weakest subtopic'
+  ]),
+  d('psych','SAQ practice',[
+    'Write 2 timed short-answer responses (8 marks each)',
+    'Mark them against the mark scheme',
+    'Log which command terms tripped you up',
+    'Review the research-methods vocabulary one more time'
+  ]),
+  d('practice','Mixed review',['15 mixed Questionbank questions across all 4 subjects'])
+]},
+{date:'8 Aug', dow:'Sat', week:4, blocks:[
+  d('chem','Mini mock',[
+    'Use Test Builder for a 20-question mini Paper 1, timed',
+    'Mark with Jojo AI',
+    'Log new mistakes in your error doc',
+    'Update your list of Reactivity sub-concepts you now consider solid'
+  ]),
+  d('bio','Mini mock',[
+    'Use Test Builder for a 20-question mini Paper 1, timed',
+    'Mark with Jojo AI',
+    'Log new mistakes in your error doc',
+    'Update your list of Unit C subtopics you now consider solid'
+  ]),
+  d('maths','Weekly Maths AI review',[
+    'Review all Maths AI formulas in the data booklet',
+    'Do 10 mixed Questionbank questions from this week',
+    'Note your weakest Maths topic going into next week'
+  ]),
+  d('practice','Weekly review',['Full review of your error doc from week 4'])
+]},
+// WEEK 5
+{date:'10 Aug', dow:'Mon', week:5, blocks:[
+  d('chem','Full mock — Paper 1',[
+    'Use Dojo\'s Exam Mode to build a full Paper 1 at HL',
+    'Time it exactly to the official duration',
+    'No notes, no help — answer everything even if unsure'
+  ]),
+  d('chem','Full mock — Paper 2',[
+    'Take a 10-minute break first',
+    'Time it exactly to the official duration',
+    'Show full working for every answer, especially Reactivity questions'
+  ]),
+  d('practice','Active rest',['Stretch, walk, or rest your eyes for 15 minutes','Don\'t mark the papers yet — do it tomorrow with a clear head'])
+]},
+{date:'11 Aug', dow:'Tue', week:5, blocks:[
+  d('chem','Deep mark of yesterday\'s mock',[
+    'Mark Paper 1 and Paper 2 fully with Jojo AI, checking every mark-scheme point',
+    'Log every single error in your error doc',
+    'Identify the one topic that cost you the most marks — check if it\'s Reactivity-related'
+  ]),
+  d('bio','Full mock — Paper 1',[
+    'Use Exam Mode for a full HL Paper 1, timed exactly',
+    'No notes',
+    'Mark it straight after with Jojo AI'
+  ]),
+  d('practice','Chemistry error review',['Redo every question you got wrong in the Chemistry mock'])
+]},
+{date:'12 Aug', dow:'Wed', week:5, blocks:[
+  d('bio','Full mock — Paper 2',[
+    'Use Exam Mode for a full HL Paper 2, timed exactly',
+    'No notes',
+    'Show all your reasoning'
+  ]),
+  d('bio','Full mock — Paper 3 (if applicable)',[
+    'Practise data-based questions in exam conditions',
+    'Time it exactly to the official duration'
+  ]),
+  d('practice','Active rest',['Stretch, walk, or rest your eyes for 15 minutes'])
+]},
+{date:'13 Aug', dow:'Thu', week:5, blocks:[
+  d('bio','Deep mark of yesterday\'s mock',[
+    'Mark Paper 2 and Paper 3 fully with Jojo AI',
+    'Log every error in your error doc',
+    'Identify the topic that cost you the most marks — check if it\'s Unit C-related'
+  ]),
+  d('psych','Full mock — Paper 1',[
+    'Answer the SAQs under timed conditions',
+    'Mark against the mark scheme',
+    'Log which command terms gave you trouble'
+  ]),
+  d('practice','Psychology error review',['Review your Psychology error doc'])
+]},
+{date:'14 Aug', dow:'Fri', week:5, blocks:[
+  d('psych','Full mock — Paper 2',[
+    'Write a complete 22-mark essay, timed',
+    'Mark it against the mark scheme and an evaluation rubric',
+    'Note exactly what your response was missing'
+  ]),
+  d('maths','Full mock — Paper 1',[
+    'Use Exam Mode, timed exactly to the official duration',
+    'Use your GDC exactly as you will on the real exam',
+    'Mark with Jojo AI and log every error'
+  ]),
+  d('practice','Psychology mock review',['Redo the SAQs and essay plan once more from memory'])
+]},
+{date:'15 Aug', dow:'Sat', week:5, blocks:[
+  d('maths','Full mock — Paper 2',[
+    'Use Exam Mode, timed exactly to the official duration',
+    'Use your GDC exactly as you will on the real exam',
+    'Mark with Jojo AI and log every error'
+  ]),
+  d('practice','Full weekly review',['Review every error doc across all 4 subjects','Write your top 3 priorities for the final week'])
+]},
+// WEEK 6
+{date:'17 Aug', dow:'Mon', week:6, blocks:[
+  d('chem','Full error-doc review',[
+    'Go through every Chemistry error logged across the last 5 weeks, prioritising Reactivity 1-3',
+    'Redo any question you\'ve gotten wrong more than once',
+    'Note the 5 concepts that still feel shaky'
+  ]),
+  d('practice','Formulas and data booklet',['Practise locating every Chemistry formula in the data booklet, timed'])
+]},
+{date:'18 Aug', dow:'Tue', week:6, blocks:[
+  d('bio','Full error-doc review',[
+    'Go through every Unit C error logged across the last 5 weeks',
+    'Redo any question you\'ve gotten wrong more than once',
+    'Note the 5 concepts that still feel shaky'
+  ]),
+  d('practice','Key diagrams',['Draw your 5 most important Unit C diagrams from memory (respiration, photosynthesis, neuron, feedback loop...) and check them against Dojo\'s notes'])
+]},
+{date:'19 Aug', dow:'Wed', week:6, blocks:[
+  d('psych','Error-doc review',['Review your Psychology errors','Review the key studies from all 3 approaches one last time']),
+  d('maths','Error-doc review',['Review your Maths AI errors','Review the Maths AI data booklet formulas']),
+  d('practice','Mixed review',['A quick 10-question mixed quiz across Psychology and Maths'])
+]},
+{date:'20 Aug', dow:'Thu', week:6, blocks:[
+  d('practice','Data booklet mastery',['Practise finding 20 different formulas (Chem, Bio, Maths) as fast as possible, and beat your time']),
+  d('practice','Formula drilling from memory',['Write out from memory the formulas that are NOT in the data booklet, then check and repeat the ones you missed'])
+]},
+{date:'21 Aug', dow:'Fri', week:6, blocks:[
+  d('chem','Mini mock on your weakest Reactivity sub-concept',['Only answer questions from your hardest sub-concept','Timed but shorter: 30 minutes']),
+  d('bio','Mini mock on your weakest Unit C subtopic',['Only answer questions from your hardest subtopic','Timed but shorter: 30 minutes']),
+  d('practice','Light Psych & Maths review',['Skim your Psychology study decks','Do 5 questions on your weakest Maths topic'])
+]},
+{date:'22 Aug', dow:'Sat', week:6, blocks:[
+  d('practice','Light final review',['Read through your error doc one last time — no new problems','Skim your summaries for each subject','Get your materials ready for September']),
+  d('practice','Rest and confidence',['Do something relaxing this afternoon','Remember: the work is done — trust your preparation'])
+]}
+];
+
+DAYS.forEach((day,i)=>{ day.id = i+1; });
+
+let currentWeek = 1;
+let currentDayId = 1;
+let progress = {};
+
+async function loadProgress(){
+  try{
+    const raw = localStorage.getItem('ib-progress-data');
+    progress = raw ? JSON.parse(raw) : {};
+  }catch(e){ progress = {}; }
+}
+async function saveProgress(){
+  try{ localStorage.setItem('ib-progress-data', JSON.stringify(progress)); }catch(e){}
+}
+
+function taskKey(dayId, blockIdx, taskIdx){ return dayId+'-'+blockIdx+'-'+taskIdx; }
+
+function resourceTag(text){
+  const t = text.toLowerCase();
+  if(t.includes('flashcard')) return 'Flashcards';
+  if(t.includes('jojo ai chat')) return 'Jojo AI Chat';
+  if(t.includes('exam mode') || t.includes('test builder')) return 'Exam Mode';
+  if(t.includes('questionbank') || t.includes('question') || t.includes('drill') || t.includes('mock') || t.includes('paper') || t.includes('quiz')) return 'Questionbank';
+  if(t.includes('mark with jojo ai') || t.includes('jojo ai') || t.includes('mark ')) return 'Jojo AI';
+  if(t.includes('read dojo') || t.includes('notes')) return 'Notes';
+  if(t.includes('error doc')) return 'Error doc';
+  return 'Active recall';
+}
+
+function estimateTime(text){
+  const t = text.toLowerCase();
+  if(t.includes('mock') || t.includes('full paper') || t.includes('exam mode')) return 45;
+  if(t.includes('20-question') || t.includes('30-question')) return 35;
+  if(t.includes('notes')) return 15;
+  if(t.includes('flashcard')) return 8;
+  if(t.includes('mark with jojo ai') || t.includes('jojo ai chat')) return 8;
+  if(t.includes('question') || t.includes('drill') || t.includes('quiz')) return 15;
+  if(t.includes('draw') || t.includes('sketch') || t.includes('write') || t.includes('practise') || t.includes('practice')) return 12;
+  return 10;
+}
+
+function blockTime(block){
+  return block.tasks.reduce((sum,t)=>sum+estimateTime(t),0);
+}
+
+function fireConfetti(container){
+  const colors = ['#C98A2B','#4F8A63','#7C6FC4','#3D8FA6','#B15C6E'];
+  for(let i=0;i<22;i++){
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = (Math.random()*100)+'%';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDelay = (Math.random()*0.15)+'s';
+    container.appendChild(p);
+    setTimeout(()=>p.remove(), 1400);
+  }
+}
+
+let toastTimer = null;
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 2600);
+}
+
+function currentStreak(){
+  let streak = 0;
+  for(const day of DAYS){
+    if(dayPct(day)===100) streak++;
+    else break;
+  }
+  return streak;
+}
+
+function tasksDoneCount(){
+  return Object.values(progress).filter(Boolean).length;
+}
+
+function dayPct(day){
+  let total=0, done=0;
+  day.blocks.forEach((b,bi)=>{ b.tasks.forEach((t,ti)=>{ total++; if(progress[taskKey(day.id,bi,ti)]) done++; }); });
+  return total? Math.round(done/total*100) : 0;
+}
+
+function overallPct(){
+  let total=0, done=0;
+  DAYS.forEach(day=>{ day.blocks.forEach((b,bi)=>{ b.tasks.forEach((t,ti)=>{ total++; if(progress[taskKey(day.id,bi,ti)]) done++; }); }); });
+  return total? Math.round(done/total*100) : 0;
+}
+
+function todayId(){
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth(), dd = now.getDate();
+  for(const day of DAYS){
+    const parts = day.date.split(' ');
+    const dn = parseInt(parts[0],10);
+    const mon = parts[1]==='Jul' ? 6 : 7;
+    if(y===2026 && m===mon && dd===dn) return day.id;
+  }
+  return null;
+}
+
+function renderWeeks(){
+  const el = document.getElementById('weeks');
+  el.innerHTML='';
+  for(let w=1; w<=6; w++){
+    const btn = document.createElement('button');
+    btn.className = 'week-btn'+(w===currentWeek?' active':'');
+    btn.textContent = 'Week '+w;
+    btn.onclick = ()=>{ currentWeek=w; const first = DAYS.find(dd=>dd.week===w); currentDayId=first.id; renderAll(); };
+    el.appendChild(btn);
+  }
+}
+
+function renderDays(){
+  document.getElementById('week-label').textContent = WEEK_LABELS[currentWeek-1];
+  const el = document.getElementById('days');
+  el.innerHTML='';
+  const tId = todayId();
+  DAYS.filter(dd=>dd.week===currentWeek).forEach(day=>{
+    const chip = document.createElement('div');
+    chip.className = 'day-chip'+(day.id===currentDayId?' active':'')+(day.id===tId?' today':'');
+    const pct = dayPct(day);
+    chip.innerHTML = '<div class="dow">'+day.dow+'</div><div class="num">'+day.date.split(' ')[0]+'</div><div class="ring" style="--pct:'+pct+'"></div>';
+    chip.onclick = ()=>{ currentDayId = day.id; renderAll(); };
+    el.appendChild(chip);
+  });
+}
+
+function renderDetail(){
+  const day = DAYS.find(dd=>dd.id===currentDayId);
+  const el = document.getElementById('day-detail');
+  const pct = dayPct(day);
+  const totalMin = day.blocks.reduce((s,b)=>s+blockTime(b),0);
+  const hrs = Math.floor(totalMin/60), mins = totalMin%60;
+  const timeLabel = (hrs?hrs+'h ':'')+mins+'m';
+  let html = '<div class="tape"></div>';
+  html += '<div class="day-detail-head">';
+  html += '<div class="day-ring-big" style="--pct-big:'+pct+'" data-pct="'+pct+'"></div>';
+  html += '<div><h2 class="day-title">'+day.dow+' '+day.date+'</h2>';
+  html += '<p class="day-sub">Day '+day.id+' of 36 · '+WEEK_LABELS[day.week-1]+' · ~'+timeLabel+' today</p></div>';
+  html += '</div>';
+  if(pct===100){ html += '<div class="complete-badge">🎉 Day complete — nice work</div>'; }
+  day.blocks.forEach((b,bi)=>{
+    const meta = SUBJECT_META[b.subject];
+    html += '<div class="block '+meta.cls+'">';
+    html += '<div class="block-head"><span class="dot"></span><span class="block-title">'+meta.icon+' '+meta.label+'</span><span class="block-time">~'+blockTime(b)+' min</span></div>';
+    html += '<div class="block-topic">'+b.topic+'</div>';
+    b.tasks.forEach((t,ti)=>{
+      const key = taskKey(day.id,bi,ti);
+      const checked = !!progress[key];
+      html += '<label class="task'+(checked?' done':'')+'" data-key="'+key+'"><input type="checkbox" '+(checked?'checked':'')+' /><span class="box"></span><span class="task-body"><span class="task-meta"><span class="tag">'+resourceTag(t)+'</span><span class="time-chip">~'+estimateTime(t)+'m</span></span><span class="txt">'+t+'</span></span></label>';
+    });
+    html += '</div>';
+  });
+  html += '<div class="nav-btns"><button id="prev-btn">&larr; Previous day</button><button id="next-btn">Next day &rarr;</button></div>';
+  el.innerHTML = html;
+
+  el.querySelectorAll('.task input').forEach(input=>{
+    input.addEventListener('change', async (e)=>{
+      const label = e.target.closest('.task');
+      const key = label.dataset.key;
+      progress[key] = e.target.checked;
+      label.classList.add('pop');
+      setTimeout(()=>label.classList.remove('pop'), 200);
+      const wasComplete = dayPct(day)===100;
+      await saveProgress();
+      const nowComplete = dayPct(day)===100;
+      if(e.target.checked && nowComplete && !wasComplete){
+        fireConfetti(el);
+      }
+      renderAll();
+    });
+  });
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  prevBtn.disabled = day.id===1;
+  nextBtn.disabled = day.id===36;
+  prevBtn.onclick = ()=>{ if(day.id>1){ currentDayId=day.id-1; currentWeek=DAYS.find(dd=>dd.id===currentDayId).week; renderAll(); } };
+  nextBtn.onclick = ()=>{ if(day.id<36){ currentDayId=day.id+1; currentWeek=DAYS.find(dd=>dd.id===currentDayId).week; renderAll(); } };
+}
+
+let prevOverallPct = 0;
+const MILESTONES = [
+  {pct:25, msg:'✨ 25% done — momentum is building'},
+  {pct:50, msg:'✨ Halfway there!'},
+  {pct:75, msg:'✨ 75% — home stretch'},
+  {pct:100, msg:'🎉 Whole plan complete!'}
+];
+function renderOverall(){
+  const pct = overallPct();
+  document.getElementById('overall-fill').style.width = pct+'%';
+  document.getElementById('overall-label').textContent = pct+'% done';
+  const streak = currentStreak();
+  document.getElementById('streak-badge').textContent = '🔥 '+streak+'-day streak';
+  document.getElementById('tasks-badge').textContent = '✅ '+tasksDoneCount()+' tasks done';
+  MILESTONES.forEach(m=>{ if(pct>=m.pct && prevOverallPct<m.pct){ showToast(m.msg); } });
+  prevOverallPct = pct;
+}
+
+function renderAll(){
+  renderWeeks();
+  renderDays();
+  renderDetail();
+  renderOverall();
+}
+
+(async function init(){
+  await loadProgress();
+  prevOverallPct = overallPct();
+  const tId = todayId();
+  if(tId){ currentDayId = tId; currentWeek = DAYS.find(dd=>dd.id===tId).week; }
+  renderAll();
+})();
+</script>
+</body>
+</html>
